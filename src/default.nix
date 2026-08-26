@@ -5,6 +5,8 @@
   imports = [
     # ./hardware
     ./parts
+    ./nix
+    ./openssh
   ];
 
   time.timeZone = "Asia/Shanghai";
