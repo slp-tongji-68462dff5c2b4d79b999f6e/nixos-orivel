@@ -5,7 +5,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d";
+    options = "--delete-older-than 30d";
   };
   nix.settings.experimental-features = [
     "nix-command"
@@ -20,7 +20,7 @@
     # "https://mirror.sjtu.edu.cn/nix-channels/store"
     "https://cache.nixos.org"
   ];
-  nix.settings.trusted-users = [ "yueyinqiu" ];
+  nix.settings.trusted-users = [ ];
 
   nix.settings.extra-substituters = [
     "https://yueyinqiu.cachix.org"

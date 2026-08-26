@@ -3,10 +3,6 @@
     nixpkgs = {
       url = "github:NixOS/nixpkgs/nixos-unstable";
     };
-    NixVirt = {
-      url = "github:AshleyYakeley/NixVirt/v0.6.0";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     nur = {
       url = "github:nix-community/NUR";
     };
@@ -20,7 +16,6 @@
       inputs.nixpkgs.lib.nixosSystem {
         system = system;
         specialArgs = {
-          nixvirt = inputs.NixVirt;
           nur = inputs.nur.legacyPackages.${system}.repos;
         };
         modules = [
@@ -36,9 +31,6 @@
       {
         default = pkgs.mkShell {
           packages = [
-            (pkgs.writeShellScriptBin "dev-switch-local-proxy" ''
-              ssh localhost -t "cd '$PWD' && sudo all_proxy=socks5h://127.0.0.1:26290 nixos-rebuild switch --flake ."
-            '')
           ];
         };
       }
