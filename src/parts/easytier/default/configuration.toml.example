@@ -1,0 +1,47 @@
+# dhcp = true
+ipv4 = "10.126.126.1/24"
+
+listeners = []
+tcp_whitelist = []
+udp_whitelist = []
+
+[network_identity]
+network_name = "xxxxxxxxxxxxxxx"
+network_secret = "xxxxxxxxxxxxxxx"
+
+# https://github.com/orgs/EasyTier/discussions/2429
+[[peer]]
+uri = "tcp://161.33.207.13:51010"
+
+# https://github.com/orgs/EasyTier/discussions/1848#discussioncomment-16793868
+[[peer]]
+uri = "tcp://et-hk.clickor.click:11010"
+
+# https://github.com/orgs/EasyTier/discussions/1848#discussioncomment-17758277
+[[peer]]
+uri = "tcp://us01.225284.xyz:11010"
+
+# https://ruixuan.online/uptime/easytier
+[[peer]]
+uri = "tcp://225284.xyz:11010"
+
+# https://ruixuan.online/uptime/easytier
+[[peer]]
+uri = "tcp://183.230.36.171:11010"
+
+# https://ruixuan.online/uptime/easytier
+[[peer]]
+uri = "tcp://easytier.weiai.org.cn:11010"
+
+# https://ruixuan.online/uptime/easytier
+[[peer]]
+uri = "txt://net.qicwken.top"
+
+# https://ruixuan.online/uptime/easytier
+[[peer]]
+uri = "wss://et.chinokou.cn"
+
+# https://uptime.lctn.site/status/easytier
+
+[flags]
+dev_name = "et-default"
