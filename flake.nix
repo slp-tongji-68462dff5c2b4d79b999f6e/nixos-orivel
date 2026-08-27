@@ -31,7 +31,7 @@
       {
         default = pkgs.mkShell {
           packages = [
-            pkgs.agenix-cli
+            pkgs.ragenix
           ];
         };
       }
