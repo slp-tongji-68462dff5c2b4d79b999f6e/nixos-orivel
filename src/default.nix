@@ -1,5 +1,4 @@
 {
-  sops-nix,
   ...
 }:
 {
@@ -8,7 +7,6 @@
     ./containers
     ./nix
     ./openssh
-    sops-nix.nixosModules.sops
   ];
 
   time.timeZone = "Asia/Shanghai";

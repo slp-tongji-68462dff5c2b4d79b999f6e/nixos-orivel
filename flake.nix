@@ -6,9 +6,6 @@
     nur = {
       url = "github:nix-community/NUR";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-    };
   };
 
   outputs = inputs: {
@@ -20,7 +17,6 @@
         system = system;
         specialArgs = {
           nur = inputs.nur.legacyPackages.${system}.repos;
-          sops-nix = inputs.sops-nix;
         };
         modules = [
           ./src
@@ -35,7 +31,7 @@
       {
         default = pkgs.mkShell {
           packages = [
-            pkgs.age
+            pkgs.agenix-cli
           ];
         };
       }
