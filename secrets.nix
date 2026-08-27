@@ -1,17 +1,42 @@
 let
-  user1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL0idNvgGiucWgup/mP78zyC23uFjYq0evcWdjGQUaBH";
-  user2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILI6jSq53F/3hEmSs+oq9L4TwOo1PrDMAgcA1uo1CCV/";
-  users = [ user1 user2 ];
+  keys = [
+    # yueyinqiu@earth-latitude-7490
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKc1wIB537oVrGzzolKRX1Yfp0fKoUSg4pQRFxiUZyDF"
+  ];
 
-  system1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPJDyIr/FSz1cJdcoW69R+NrWzwGK/+3gJpqD1t8L2zE";
-  system2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKzxQgondgEYcLpcPdJLrTdNgZ2gznOHCAxMdaceTUT1";
-  systems = [ system1 system2 ];
-in
-{
-  "secret1.age".publicKeys = [ user1 system1 ];
-  "secret2.age".publicKeys = users ++ systems;
-  "armored-secret.age" = {
-    publicKeys = [ user1 ];
-    armor = true;
+  root = builtins.path {
+    path = ./src;
+    name = "orivel-src";
   };
-}
+
+  listAgeFiles =
+    directory: prefix:
+    let
+      entries = builtins.readDir directory;
+      names = builtins.attrNames entries;
+      collect =
+        name:
+        let
+          type = entries.${name};
+          directory = directory + "/${name}";
+          path = "${prefix}${name}";
+        in
+        if type == "directory" then
+          listAgeFiles directory (path + "/")
+        else if (type == "regular") && builtins.match ".*\\.age$" name != null then
+          [ path ]
+        else
+          [ ];
+    in
+    builtins.concatLists (map collect names);
+
+  ageFiles = listAgeFiles root "src/";
+in
+builtins.listToAttrs (
+  map (p: {
+    name = p;
+    value = {
+      publicKeys = keys;
+    };
+  }) ageFiles
+)
