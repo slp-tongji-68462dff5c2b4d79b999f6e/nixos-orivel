@@ -1,8 +1,11 @@
 {
+  agenix,
   ...
 }:
 {
   imports = [
+    agenix.nixosModules.default
+
     # ./hardware
     ./containers
     ./nix

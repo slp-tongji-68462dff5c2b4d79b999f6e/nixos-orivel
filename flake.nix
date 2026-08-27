@@ -6,6 +6,9 @@
     nur = {
       url = "github:nix-community/NUR";
     };
+    inputs.agenix = {
+      url = "github:ryantm/agenix";
+    };
   };
 
   outputs = inputs: {
@@ -17,6 +20,7 @@
         system = system;
         specialArgs = {
           nur = inputs.nur.legacyPackages.${system}.repos;
+          agenix = inputs.agenix;
         };
         modules = [
           ./src
