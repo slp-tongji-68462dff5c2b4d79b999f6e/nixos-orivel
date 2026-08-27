@@ -32,6 +32,17 @@
         default = pkgs.mkShell {
           packages = [
             pkgs.ragenix
+            (pkgs.writeShellScriptBin "dev-edit-secret" ''
+              set -euo pipefail
+              target="$1"
+              sample="${./sample-secret.age}"
+
+              if [ ! -e "$target" ]; then
+                ${pkgs.coreutils}/bin/cp -- "$sample" "$target"
+              fi
+
+              exec ${pkgs.ragenix}/bin/ragenix -e "$target"
+            '')
           ];
         };
       }
