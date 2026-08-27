@@ -6,7 +6,7 @@
     nur = {
       url = "github:nix-community/NUR";
     };
-    inputs.agenix = {
+    agenix = {
       url = "github:ryantm/agenix";
     };
   };
