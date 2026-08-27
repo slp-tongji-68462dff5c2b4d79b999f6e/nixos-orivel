@@ -18,11 +18,10 @@ let
         name:
         let
           type = entries.${name};
-          directory = directory + "/${name}";
           path = "${prefix}${name}";
         in
         if type == "directory" then
-          listAgeFiles directory (path + "/")
+          listAgeFiles (directory + "/${name}") (path + "/")
         else if (type == "regular") && builtins.match ".*\\.age$" name != null then
           [ path ]
         else
