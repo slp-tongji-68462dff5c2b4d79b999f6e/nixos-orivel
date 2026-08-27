@@ -1,20 +1,22 @@
 {
+  sops-nix,
   ...
 }:
 {
   imports = [
     # ./hardware
-    ./parts
+    ./containers
     ./nix
     ./openssh
+    sops-nix.nixosModules.sops
   ];
 
   time.timeZone = "Asia/Shanghai";
   i18n.defaultLocale = "en_US.UTF-8";
-  
+
   networking.hostName = "orivel";
   system.stateVersion = "26.05";
-  
+
   boot.zswap.enable = true;
   swapDevices = [
     {
