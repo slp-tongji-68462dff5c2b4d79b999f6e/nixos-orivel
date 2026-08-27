@@ -39,6 +39,6 @@ builtins.listToAttrs (
     };
   }) ageFiles
 )
-++ {
-  "sample.age".publicKeys = keys;
+// {
+  "sample-secret.age".publicKeys = keys;
 }
