@@ -6,6 +6,8 @@
   imports = [
     agenix.nixosModules.default
 
+    ./agenix
+
     # ./hardware
     ./containers
     ./nix

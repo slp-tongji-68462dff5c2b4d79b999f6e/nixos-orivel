@@ -1,11 +1,13 @@
-{ config, ... }:
+{
+  config,
+  lib,
+  ...
+}:
 let
-  secretName = "easytier-secret";
+  agenixLib = import ../../lib/agenix.nix { inherit lib; };
   secretInContainer = "/run/easytier.env";
 in
 {
-  age.secrets.${secretName}.file = ./network-secret.env.age;
-
   containers.easytier = {
     autoStart = true;
 
@@ -16,7 +18,7 @@ in
     ];
 
     bindMounts.${secretInContainer} = {
-      hostPath = config.age.secrets.${secretName}.path;
+      hostPath = config.age.secrets.${agenixLib.agenixName ./network-secret.env.age}.path;
       isReadOnly = true;
     };
 
