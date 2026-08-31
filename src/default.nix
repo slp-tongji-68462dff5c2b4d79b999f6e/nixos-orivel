@@ -17,12 +17,4 @@
 
   networking.hostName = "orivel";
   system.stateVersion = "26.05";
-
-  boot.zswap.enable = true;
-  swapDevices = [
-    {
-      device = "/swapfile";
-      options = [ "discard" ];
-    }
-  ];
 }
