@@ -6,9 +6,6 @@
     nur = {
       url = "github:nix-community/NUR";
     };
-    agenix = {
-      url = "github:ryantm/agenix";
-    };
   };
 
   outputs = inputs: {
@@ -20,7 +17,6 @@
         system = system;
         specialArgs = {
           nur = inputs.nur.legacyPackages.${system}.repos;
-          agenix = inputs.agenix;
         };
         modules = [
           ./src
@@ -35,18 +31,6 @@
       {
         default = pkgs.mkShell {
           packages = [
-            pkgs.ragenix
-            (pkgs.writeShellScriptBin "dev-edit-secret" ''
-              set -euo pipefail
-              target="$1"
-              sample="${./sample-secret.age}"
-
-              if [ ! -e "$target" ]; then
-                ${pkgs.coreutils}/bin/cp -- "$sample" "$target"
-              fi
-
-              exec ${pkgs.ragenix}/bin/ragenix -e "$target"
-            '')
           ];
         };
       }
