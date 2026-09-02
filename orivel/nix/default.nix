@@ -20,8 +20,6 @@
     # "https://mirror.sjtu.edu.cn/nix-channels/store"
     "https://cache.nixos.org"
   ];
-  nix.settings.trusted-users = [ ];
-
   nix.settings.extra-substituters = [
     "https://yueyinqiu.cachix.org"
   ];
