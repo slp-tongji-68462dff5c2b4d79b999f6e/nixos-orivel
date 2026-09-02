@@ -19,7 +19,7 @@
           nur = inputs.nur.legacyPackages.${system}.repos;
         };
         modules = [
-          ./src
+          ./orivel
         ];
       };
 
