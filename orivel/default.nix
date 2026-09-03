@@ -7,6 +7,7 @@
     ./services
     ./nix
     ./openssh
+    ./users
   ];
 
   time.timeZone = "Asia/Shanghai";
