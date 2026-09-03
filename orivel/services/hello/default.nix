@@ -4,7 +4,7 @@ let
 in
 {
   services.https-gateway.sites.hello = {
-    domain = "hello.example.com";
+    domain = "hello.tjslp.yueyinqiu.top";
     upstream = "http://127.0.0.1:${toString port}";
   };
 
