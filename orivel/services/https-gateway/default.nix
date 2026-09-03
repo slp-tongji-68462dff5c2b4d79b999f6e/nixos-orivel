@@ -4,18 +4,17 @@
     backends = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
-          hostname = lib.mkOption {
+          domain = lib.mkOption {
             type = lib.types.str;
-            description = "公网域名";
+            description = "域名";
+          };
+          host = lib.mkOption {
+            type = lib.types.str;
+            description = "后端地址；默认 127.0.0.1（宿主机本地服务），其他设备填其内网 IP";
           };
           port = lib.mkOption {
             type = lib.types.port;
             description = "后端监听端口";
-          };
-          host = lib.mkOption {
-            type = lib.types.str;
-            default = "127.0.0.1";
-            description = "后端地址；默认 127.0.0.1（宿主机本地服务），其他设备填其内网 IP";
           };
         };
       });
@@ -30,18 +29,16 @@
 
     containers.https-gateway = {
       autoStart = true;
-      # 共享宿主网络，才能反代宿主机上 127.0.0.1 的服务
       privateNetwork = false;
 
       bindMounts."/etc/https-gateway" = {
         hostPath = "/etc/https-gateway";
         isReadOnly = true;
       };
-
       specialArgs.container = {
         backends = config.services.https-gateway.backends;
       };
-
+      
       config = {
         imports = [
           ./acme.nix
