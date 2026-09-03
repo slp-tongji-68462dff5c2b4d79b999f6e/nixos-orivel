@@ -6,7 +6,7 @@
         options = {
           domain = lib.mkOption {
             type = lib.types.str;
-            description = "公网域名";
+            description = "访问服务时要使用的域名（域名会放在公网 DNS ，并解析出校园网地址）";
           };
           upstream = lib.mkOption {
             type = lib.types.str;
@@ -15,7 +15,6 @@
         };
       });
       default = { };
-      description = "对外暴露的域名清单，各服务模块自行声明；配置在此处即反代 + 证书 + DDNS";
     };
   };
 
