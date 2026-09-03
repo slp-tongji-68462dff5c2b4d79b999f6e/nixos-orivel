@@ -5,10 +5,10 @@
     recommendedTlsSettings = true;
     recommendedProxySettings = true;
     virtualHosts =
-      lib.mapAttrs' (name: backend: lib.nameValuePair backend.domain {
-        useACMEHost = backend.domain;
+      lib.mapAttrs' (name: host: lib.nameValuePair host.domain {
+        useACMEHost = host.domain;
         forceSSL = true;
-        locations."/" = { proxyPass = "http://${backend.host}:${toString backend.port}"; };
-      }) container.backends;
+        locations."/" = { proxyPass = host.upstream; };
+      }) container.sites;
   };
 }

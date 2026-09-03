@@ -1,25 +1,21 @@
 { config, lib, ... }:
 {
   options.services.https-gateway = {
-    backends = lib.mkOption {
+    sites = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
           domain = lib.mkOption {
             type = lib.types.str;
-            description = "域名";
+            description = "公网域名";
           };
-          host = lib.mkOption {
+          upstream = lib.mkOption {
             type = lib.types.str;
-            description = "后端地址；默认 127.0.0.1（宿主机本地服务），其他设备填其内网 IP";
-          };
-          port = lib.mkOption {
-            type = lib.types.port;
-            description = "后端监听端口";
+            description = "反代上游，如 http://127.0.0.1:8096";
           };
         };
       });
       default = { };
-      description = "对外服务清单，各服务模块自行声明；配置在此处即反代 + 证书 + DDNS";
+      description = "对外暴露的域名清单，各服务模块自行声明；配置在此处即反代 + 证书 + DDNS";
     };
   };
 
@@ -35,10 +31,11 @@
         hostPath = "/etc/https-gateway";
         isReadOnly = true;
       };
+
       specialArgs.container = {
-        backends = config.services.https-gateway.backends;
+        sites = config.services.https-gateway.sites;
       };
-      
+
       config = {
         imports = [
           ./acme.nix

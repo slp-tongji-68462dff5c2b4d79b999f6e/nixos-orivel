@@ -3,12 +3,12 @@
   security.acme = {
     acceptTerms = true;
     certs =
-      lib.mapAttrs' (name: backend: lib.nameValuePair backend.domain {
+      lib.mapAttrs' (name: host: lib.nameValuePair host.domain {
         dnsProvider = "cloudflare";
-        domain = backend.domain;
+        domain = host.domain;
         environmentFile = "/etc/https-gateway/acme.env";
         group = "nginx";
         reloadServices = [ "nginx" ];
-      }) container.backends;
+      }) container.sites;
   };
 }
