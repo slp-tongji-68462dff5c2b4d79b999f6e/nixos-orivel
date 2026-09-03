@@ -17,8 +17,8 @@ in
     autoStart = true;
     privateNetwork = false;
 
-    bindMounts.${environmentFileDirectory} = {
-      hostPath = environmentFileDirectory;
+    bindMounts."/etc/${environmentFileDirectory}" = {
+      hostPath = "/etc/${environmentFileDirectory}";
       isReadOnly = true;
     };
     
