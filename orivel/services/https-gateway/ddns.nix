@@ -4,5 +4,7 @@
     enable = true;
     credentialsFile = "/etc/https-gateway/ddns.env";
     domains = map (b: b.hostname) (lib.attrValues container.backends);
+    provider.ipv4 = "local.iface:eth0";
+    provider.ipv6 = "none";
   };
 }
