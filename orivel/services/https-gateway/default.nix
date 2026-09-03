@@ -31,6 +31,9 @@
         isReadOnly = true;
       };
 
+      # useHostResolvConf 有时序问题，改为手动 mount
+      # 容器内另外禁用了 networking.resolvconf.enable （以避免尝试修改 resolv.conf ，同时也隐式禁用 useHostResolvConf ）
+      # https://github.com/NixOS/nixpkgs/issues/162686#issuecomment-3295385984
       bindMounts."/etc/resolv.conf" = {
         hostPath = "/etc/resolv.conf";
         isReadOnly = true;
@@ -47,7 +50,6 @@
           ./ddns.nix
         ];
         system.stateVersion = "26.05";
-        networking.useHostResolvConf = false;
         networking.resolvconf.enable = false;
       };
     };
