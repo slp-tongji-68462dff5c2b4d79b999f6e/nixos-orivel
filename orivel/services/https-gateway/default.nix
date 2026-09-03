@@ -31,6 +31,11 @@
         isReadOnly = true;
       };
 
+      bindMounts."/etc/resolv.conf" = {
+        hostPath = "/etc/resolv.conf";
+        isReadOnly = true;
+      };
+
       specialArgs.container = {
         sites = config.services.https-gateway.sites;
       };
@@ -42,6 +47,8 @@
           ./ddns.nix
         ];
         system.stateVersion = "26.05";
+        networking.useHostResolvConf = false;
+        networking.resolvconf.enable = false;
       };
     };
   };
