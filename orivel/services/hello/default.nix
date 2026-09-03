@@ -11,7 +11,7 @@ in
   containers.hello = {
     autoStart = true;
     privateNetwork = false;
-    config = { ... }: {
+    config = {
       services.go-httpbin = {
         enable = true;
         settings.PORT = port;
