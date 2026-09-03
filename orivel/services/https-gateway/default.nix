@@ -41,6 +41,7 @@
           ./nginx.nix
           ./ddns.nix
         ];
+        system.stateVersion = "26.05";
       };
     };
   };

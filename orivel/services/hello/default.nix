@@ -16,6 +16,7 @@ in
         enable = true;
         settings.PORT = port;
       };
+      system.stateVersion = "26.05";
     };
   };
 }
