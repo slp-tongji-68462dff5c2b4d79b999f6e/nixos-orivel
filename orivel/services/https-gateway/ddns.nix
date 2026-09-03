@@ -7,4 +7,6 @@
     provider.ipv4 = "local.iface:eth0";
     provider.ipv6 = "none";
   };
+  # https://github.com/NixOS/nixpkgs/pull/505505#issuecomment-4193234755
+  systemd.services.cloudflare-ddns.serviceConfig.RestrictAddressFamilies = [ "AF_NETLINK" ];
 }
