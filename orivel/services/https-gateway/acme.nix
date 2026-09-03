@@ -3,9 +3,9 @@
   security.acme = {
     acceptTerms = true;
     certs =
-      lib.mapAttrs' (name: host: lib.nameValuePair host.domain {
+      lib.mapAttrs' (name: site: lib.nameValuePair site.domain {
         dnsProvider = "cloudflare";
-        domain = host.domain;
+        domain = site.domain;
         environmentFile = "/etc/https-gateway/acme.env";
         group = "nginx";
         reloadServices = [ "nginx" ];
