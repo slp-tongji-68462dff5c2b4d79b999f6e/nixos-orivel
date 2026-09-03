@@ -25,15 +25,9 @@
   };
 
   config = {
-    environment.etc."https-gateway/acme.env.sample" = {
-      source = ./acme.env.sample;
-      mode = "0444";
-    };
+    environment.etc."https-gateway/acme.env.sample".source = ./acme.env.sample;
 
-    environment.etc."https-gateway/ddns.env.sample" = {
-      source = ./ddns.env.sample;
-      mode = "0444";
-    };
+    environment.etc."https-gateway/ddns.env.sample".source = ./ddns.env.sample;
 
     containers.https-gateway = {
       autoStart = true;
