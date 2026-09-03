@@ -1,7 +1,7 @@
 {
   inputs = {
     nixpkgs = {
-      url = "github:NixOS/nixpkgs/nixos-26.05";
+      url = "github:NixOS/nixpkgs/nixos-unstable";
     };
     nur = {
       url = "github:nix-community/NUR";
