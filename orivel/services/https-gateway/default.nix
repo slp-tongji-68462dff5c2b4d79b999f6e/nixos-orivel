@@ -1,18 +1,6 @@
 { config, lib, ... }:
-let
-  email = "you@example.com";
-  secretsDir = "/var/lib/secrets";
-  edgeCfg = config.services.edge;
-  compiledBackends =
-    lib.mapAttrs (name: b:
-      b // {
-        upstream = "http://${b.host}:${toString b.port}";
-      }
-    ) edgeCfg.backends;
-  domainNames = map (b: b.hostname) (lib.attrValues edgeCfg.backends);
-in
 {
-  options.services.edge = {
+  options.services.https-gateway = {
     backends = lib.mkOption {
       type = lib.types.attrsOf (lib.types.submodule {
         options = {
@@ -37,25 +25,34 @@ in
   };
 
   config = {
-    containers.edge = {
+    environment.etc."https-gateway/acme.env.sample" = {
+      source = ./acme.env.sample;
+      mode = "0444";
+    };
+
+    environment.etc."https-gateway/ddns.env.sample" = {
+      source = ./ddns.env.sample;
+      mode = "0444";
+    };
+
+    containers.https-gateway = {
       autoStart = true;
       # 共享宿主网络，才能反代宿主机上 127.0.0.1 的服务
       privateNetwork = false;
 
-      bindMounts."${secretsDir}" = {
-        hostPath = secretsDir;
+      bindMounts."/etc/https-gateway" = {
+        hostPath = "/etc/https-gateway";
         isReadOnly = true;
       };
 
-      specialArgs.edge = {
-        inherit email secretsDir;
-        backends = compiledBackends;
-        domainNames = domainNames;
+      specialArgs.container = {
+        backends = config.services.https-gateway.backends;
       };
 
       config = {
         imports = [
-          ./proxy.nix
+          ./acme.nix
+          ./nginx.nix
           ./ddns.nix
         ];
       };
