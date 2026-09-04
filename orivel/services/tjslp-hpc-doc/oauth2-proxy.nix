@@ -9,7 +9,7 @@ let
   ensureCookieSecret = pkgs.writeShellScript "ensure-cookie-secret" ''
     set -euo pipefail
     if [ ! -s "${cookieSecret}" ]; then
-      "${pkgs.openssl}/bin/openssl" rand -hex 32 > "${cookieSecret}"
+      "${pkgs.openssl}/bin/openssl" rand -hex 32 | "${pkgs.coreutils}/bin/tr" -d '\n' > "${cookieSecret}"
       "${pkgs.coreutils}/bin/chmod" 600 "${cookieSecret}"
     fi
   '';
@@ -43,6 +43,9 @@ in
     cookie.secure = true;
 
     scope = "openid profile email groups";
+
+    # 授权交给 allowed-group，这里放空 email 校验（否则模块默认要求 email-domain 或 email 文件）。
+    email.domains = [ "*" ];
 
     httpAddress = "127.0.0.1:${toString serviceConfigurations.port}";
 
