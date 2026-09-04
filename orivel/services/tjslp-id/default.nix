@@ -15,7 +15,7 @@ in
   options.services.tjslp-id.clients = lib.mkOption {
     type = lib.types.attrsOf (
       lib.types.submodule (
-        { id, ... }: {
+        { name, ... }: {
           options = {
             name = lib.mkOption {
               type = lib.types.str;
@@ -28,13 +28,13 @@ in
             secretFile = lib.mkOption {
               type = lib.types.str;
               readOnly = true;
-              default = "${clientSecrets}/${id}.raw";
+              default = "${clientSecrets}/${name}.raw";
               description = "secret 文件";
             };
             secretEnvironmentFile = lib.mkOption {
               type = lib.types.str;
               readOnly = true;
-              default = "${clientSecrets}/${id}.env";
+              default = "${clientSecrets}/${name}.env";
               description = "secret 文件（环境变量形式）";
             };
           };
@@ -61,15 +61,10 @@ in
         if [ ! -s "${client.secretFile}" ]; then
           ${pkgs.openssl}/bin/openssl rand -hex 32 > "${client.secretFile}"
           chmod 600 "${client.secretFile}"
-
-          cat "${client.secretFile}" > "${client.secretEnvironmentFile}" # 这怎么拼一个 xxx= ？
-          chmod 600 "${client.secretEnvironmentFile}"
         fi
 
-        if [ ! -s "${client.secretEnvironmentFile}" ]; then
-          cat "${client.secretFile}" > "${client.secretEnvironmentFile}" # 这怎么拼一个 xxx= ？
-          chmod 600 "${client.secretEnvironmentFile}"
-        fi
+        printf 'TJSLP_ID_CLIENT_SECRET=%s\n' "$(cat "${client.secretFile}")" > "${client.secretEnvironmentFile}"
+        chmod 600 "${client.secretEnvironmentFile}"
       '') (lib.attrValues config.services.tjslp-id.clients);
     };
 
@@ -102,7 +97,7 @@ in
         hostPath = "/etc/resolv.conf";
         isReadOnly = true;
       };
-      networking.resolvconf.enable = false;
+      config.networking.resolvconf.enable = false;
     };
   };
 }

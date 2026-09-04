@@ -30,7 +30,7 @@ in
         lib.mapAttrsToList (id: client: {
           id = id;
           name = client.name;
-          redirectURIs = client.redirectURIs;
+          redirectURIs = client.callbacks;
           secretFile = client.secretFile;
         }) serviceConfigurations.clients;
     };
