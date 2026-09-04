@@ -23,6 +23,9 @@ in
             clientID = "Ov23liu7nBtgRFMngGX7";
             clientSecret = "$DEX_GITHUB_CLIENT_SECRET";
             redirectURI = "https://${serviceConfigurations.domain}/callback";
+            orgs = [
+              { name = "slp-tongji-68462dff5c2b4d79b999f6e"; }
+            ];
           };
         }
       ];
