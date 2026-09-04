@@ -11,7 +11,10 @@ let
     # oauth2-proxy 用 URL-safe base64 解码 cookie secret（解码后须为 16/24/32 字节）；
     # 生成 32 随机字节并转成 URL-safe base64（无 `+/`、无尾随换行）。
     if [ ! -s "${cookieSecret}" ]; then
-      "${pkgs.openssl}/bin/openssl" rand -base64 32 | "${pkgs.coreutils}/bin/tr" -- '+/' '-_' | "${pkgs.coreutils}/bin/tr" -d '\n' > "${cookieSecret}"
+      "${pkgs.openssl}/bin/openssl" rand -base64 32 | \
+        "${pkgs.coreutils}/bin/tr" -- '+/' '-_' | \
+        "${pkgs.coreutils}/bin/tr" -d '\n' > \
+        "${cookieSecret}"
       "${pkgs.coreutils}/bin/chmod" 600 "${cookieSecret}"
     fi
   '';
