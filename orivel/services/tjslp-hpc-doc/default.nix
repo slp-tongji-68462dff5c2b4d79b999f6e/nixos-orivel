@@ -7,6 +7,9 @@ let
   domain = "hpc-doc.tjslp.yueyinqiu.top";
   callback = "https://${domain}/oauth2/callback";
   oidcSecret = config.services.tjslp-id.clients.hpc-doc.secretFile;
+  configurationDirectory = "service-config/tjslp-hpc-doc";
+  deployKeyFile = "${configurationDirectory}/key";
+  stateDirectoryName = "tjslp-hpc-doc";
 in
 {
   config = {
@@ -14,6 +17,8 @@ in
       domain = domain;
       upstream = "http://127.0.0.1:${toString port}";
     };
+
+    environment.etc."${deployKeyFile}.sample".source = ./key.sample;
 
     services.tjslp-id.clients.hpc-doc = {
       name = "HPC Documentation";
@@ -29,15 +34,24 @@ in
         isReadOnly = true;
       };
 
+      bindMounts."/etc/${configurationDirectory}" = {
+        hostPath = "/etc/${configurationDirectory}";
+        isReadOnly = true;
+      };
+
       specialArgs.serviceConfigurations = {
         port = port;
         callback = callback;
         oidcSecret = oidcSecret;
+        deployKeyFile = "/etc/${deployKeyFile}";
+        stateDirectoryName = stateDirectoryName;
+        outputDirectory = "/var/lib/${stateDirectoryName}/public";
       };
 
       config = {
         imports = [
           ./oauth2-proxy.nix
+          ./hugo.nix
         ];
         system.stateVersion = "26.05";
       };
