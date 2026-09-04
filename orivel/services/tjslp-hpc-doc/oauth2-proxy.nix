@@ -4,9 +4,12 @@
   ...
 }:
 let
-  cookieSecret = "/var/lib/${serviceConfigurations.stateDirectoryName}/oauth2-proxy/cookie-secret";
+  oauth2ProxyDirectory = "/var/lib/${serviceConfigurations.stateDirectoryName}/oauth2-proxy";
+  cookieSecret = "${oauth2ProxyDirectory}/cookie-secret";
+  
   ensureCookieSecret = pkgs.writeShellScript "ensure-cookie-secret" ''
     set -euo pipefail
+    mkdir -p "${oauth2ProxyDirectory}"
     if [ ! -s "${cookieSecret}" ]; then
       "${pkgs.openssl}/bin/openssl" rand -base64 32 | \
         "${pkgs.coreutils}/bin/tr" -- '+/' '-_' | \
