@@ -6,13 +6,11 @@
 let
   stateDirectoryName = "tjslp-hpc-doc";
   cookieSecret = "/var/lib/${stateDirectoryName}/cookie-secret";
-  # 首次启动（或文件不存在/为空）时在容器内生成随机 cookie secret；之后保留，实现运行期持久 state。
-  # 以 oauth2-proxy 身份运行（StateDirectory 归主进程用户所有，文件自然归其所有，无需 chown）。
   ensureCookieSecret = pkgs.writeShellScript "ensure-cookie-secret" ''
     set -euo pipefail
     if [ ! -s "${cookieSecret}" ]; then
-      ${pkgs.openssl}/bin/openssl rand -hex 32 > "${cookieSecret}"
-      ${pkgs.coreutils}/bin/chmod 600 "${cookieSecret}"
+      "${pkgs.openssl}/bin/openssl" rand -hex 32 > "${cookieSecret}"
+      "${pkgs.coreutils}/bin/chmod" 600 "${cookieSecret}"
     fi
   '';
   siteDir = pkgs.writeTextDir "index.html" ''
