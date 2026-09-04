@@ -1,1 +1,1 @@
-生成 ssh 密钥对，在 https://github.com/yueyinqiu/TjslpHpcHandbook/settings/keys 添加公钥，在 `/etc/service-config/tjslp-hpc-doc/key` 填入私钥。
+在 https://github.com/organizations/slp-tongji-68462dff5c2b4d79b999f6e/settings/applications/3817467 获取 key 填入 `/etc/service-config/tjslp-id/dex.env` 。
