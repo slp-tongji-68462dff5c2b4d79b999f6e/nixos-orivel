@@ -59,7 +59,7 @@ in
         install -d -m 700 "${clientSecrets}"
 
         if [ ! -s "${client.secretFile}" ]; then
-          ${pkgs.openssl}/bin/openssl rand -hex 32 > "${client.secretFile}"
+          ${pkgs.openssl}/bin/openssl rand -hex 32 | ${pkgs.coreutils}/bin/tr -d '\n' > "${client.secretFile}"
           chmod 600 "${client.secretFile}"
         fi
 

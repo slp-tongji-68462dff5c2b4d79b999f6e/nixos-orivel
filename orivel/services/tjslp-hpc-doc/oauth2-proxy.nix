@@ -8,8 +8,10 @@ let
   cookieSecret = "/var/lib/${stateDirectoryName}/cookie-secret";
   ensureCookieSecret = pkgs.writeShellScript "ensure-cookie-secret" ''
     set -euo pipefail
-    if [ ! -s "${cookieSecret}" ] || [ "$(wc -c < "${cookieSecret}")" != 64 ]; then
-      "${pkgs.openssl}/bin/openssl" rand -hex 32 | "${pkgs.coreutils}/bin/tr" -d '\n' > "${cookieSecret}"
+    # oauth2-proxy 用 URL-safe base64 解码 cookie secret（解码后须为 16/24/32 字节）；
+    # 生成 32 随机字节并转成 URL-safe base64（无 `+/`、无尾随换行）。
+    if [ ! -s "${cookieSecret}" ]; then
+      "${pkgs.openssl}/bin/openssl" rand -base64 32 | "${pkgs.coreutils}/bin/tr" -- '+/' '-_' | "${pkgs.coreutils}/bin/tr" -d '\n' > "${cookieSecret}"
       "${pkgs.coreutils}/bin/chmod" 600 "${cookieSecret}"
     fi
   '';
@@ -51,8 +53,9 @@ in
     upstream = [ "file://${siteDir}#/" ];
 
     extraConfig = {
-      "allowed-group" = [ "slp-tongji-68462dff5c2b4d79b999f6e:*" ];
       "cookie-secret-file" = cookieSecret;
+      # 访问受保护路径时直接重定向到 IdP，不显示默认的 sign-in 按钮页。
+      "skip-provider-button" = true;
     };
   };
 
