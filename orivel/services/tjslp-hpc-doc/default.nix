@@ -24,7 +24,7 @@ in
       privateNetwork = false;
 
       bindMounts.${oidcSecret} = {
-        hostPath = "${oidcSecret}";
+        hostPath = oidcSecret;
         isReadOnly = true;
       };
 
