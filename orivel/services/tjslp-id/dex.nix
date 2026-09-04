@@ -1,4 +1,4 @@
-{ serviceConfigurations, ... }:
+{ serviceConfigurations, lib, ... }:
 let
   stateDirectoryName = "dex";
 in
@@ -26,6 +26,13 @@ in
           };
         }
       ];
+      staticClients =
+        lib.mapAttrsToList (id: client: {
+          id = id;
+          name = client.name;
+          redirectURIs = client.redirectURIs;
+          secretFile = client.secretFile;
+        }) serviceConfigurations.clients;
     };
   };
   systemd.services.dex.serviceConfig.StateDirectory = stateDirectoryName;
