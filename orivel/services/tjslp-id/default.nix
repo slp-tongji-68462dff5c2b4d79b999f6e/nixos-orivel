@@ -1,19 +1,19 @@
 { ... }:
 let
   port = 25621;
-  environmentFileDirectory = "service-config/id";
+  environmentFileDirectory = "service-config/tjslp-id";
   environmentFileName = "dex.env";
   domain = "id.tjslp.yueyinqiu.top";
 in
 {
-  services.https-gateway.sites.id = {
+  services.https-gateway.sites.tjslp-id = {
     domain = domain;
     upstream = "http://127.0.0.1:${toString port}";
   };
 
   environment.etc."${environmentFileDirectory}/${environmentFileName}.sample".source = ./dex.env.sample;
 
-  containers.id = {
+  containers.tjslp-id = {
     autoStart = true;
     privateNetwork = false;
 
