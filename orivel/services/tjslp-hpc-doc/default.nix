@@ -5,6 +5,7 @@
 let
   port = 54560;
   domain = "hpc-doc.tjslp.yueyinqiu.top";
+  callback = "https://${domain}/oauth2/callback";
   oidcSecret = config.services.tjslp-id.clients.hpc-doc.secretFile;
 in
 {
@@ -16,7 +17,7 @@ in
 
     services.tjslp-id.clients.hpc-doc = {
       name = "HPC Documentation";
-      callbacks = [ "https://${domain}/oauth2/callback" ];
+      callbacks = [ callback ];
     };
 
     containers.tjslp-hpc-doc = {
@@ -30,7 +31,7 @@ in
 
       specialArgs.serviceConfigurations = {
         port = port;
-        domain = domain;
+        callback = callback;
         oidcSecret = oidcSecret;
       };
 
