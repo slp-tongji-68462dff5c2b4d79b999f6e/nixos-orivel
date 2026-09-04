@@ -36,6 +36,7 @@ in
 
     redirectURL = serviceConfigurations.callback;
     cookie.secure = true;
+    cookie.secretFile = cookieSecret;
 
     scope = "openid profile email groups";
 
@@ -48,7 +49,6 @@ in
     ];
 
     extraConfig = {
-      "cookie-secret-file" = cookieSecret;
       "skip-provider-button" = true;
     };
   };
