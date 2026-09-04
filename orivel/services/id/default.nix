@@ -35,7 +35,7 @@ in
       system.stateVersion = "26.05";
     };
     
-    # useHostResolvConf 底层是复制 resolv.conf ，但有时序问题，可能在 resolv.conf 还未创建时复制，这里改为手动 mount
+    # useHostResolvConf 底层是复制 resolv.conf ，有时序问题，可能在宿主 resolv.conf 还未创建时复制，这里改为手动 mount
     # https://github.com/NixOS/nixpkgs/issues/162686#issuecomment-3295385984
     bindMounts."/etc/resolv.conf" = {
       hostPath = "/etc/resolv.conf";
