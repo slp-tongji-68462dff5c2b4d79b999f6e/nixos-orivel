@@ -7,7 +7,6 @@ let
   hugoDirectory = "/var/lib/${serviceConfigurations.stateDirectoryName}/hugo";
   sourceDirectory = "${hugoDirectory}/source";
 
-  # 给 git 用的 ssh 包装脚本：git 通过 GIT_SSH_COMMAND 调用它，它再调用 ssh 并带上指定参数。
   sshCommand = pkgs.writeShellScript "tjslp-hpc-doc-git-ssh" ''
     exec ${pkgs.openssh}/bin/ssh \
       -o StrictHostKeyChecking=accept-new \
@@ -22,7 +21,6 @@ let
     mkdir -p "${hugoDirectory}"
 
     export GIT_SSH_COMMAND="${sshCommand}"
-
     if [ ! -d "${sourceDirectory}/.git" ]; then
       "${pkgs.git}/bin/git" clone \
         --depth 1 \
