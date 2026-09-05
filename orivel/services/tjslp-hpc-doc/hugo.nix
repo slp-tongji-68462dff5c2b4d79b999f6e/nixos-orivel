@@ -33,6 +33,7 @@ let
     fi
 
     temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "${hugoDirectory}")"
+    "${pkgs.coreutils}/bin/chmod" 755 "$temp"
     "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
       --destination "$temp"
