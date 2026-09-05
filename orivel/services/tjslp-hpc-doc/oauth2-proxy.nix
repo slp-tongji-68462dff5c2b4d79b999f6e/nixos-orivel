@@ -55,5 +55,6 @@ in
   systemd.services.oauth2-proxy.serviceConfig = {
     StateDirectory = oauth2ProxyDirectory;
     ExecStartPre = "${ensureCookieSecret}";
+    RestartSec = "5s";
   };
 }
