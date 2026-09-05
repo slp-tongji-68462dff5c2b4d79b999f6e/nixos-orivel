@@ -21,25 +21,30 @@ let
     export GIT_SSH_COMMAND="${sshCommand}"
     if [ ! -d "${sourceDirectory}/.git" ]; then
       "${pkgs.git}/bin/git" clone \
-        --branch main \
         git@github.com:yueyinqiu/TjslpHpcHandbook.git \
         "${sourceDirectory}"
     else
-      before="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse HEAD)"
-      "${pkgs.git}/bin/git" -C "${sourceDirectory}" fetch origin main
-      after="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse FETCH_HEAD)"
-      if [ "$before" = "$after" ]; then
-        exit 0
-      fi
-      "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard FETCH_HEAD
+      "${pkgs.git}/bin/git" -C "${sourceDirectory}" fetch origin --tags --prune --prune-tags
     fi
+
+    latestTag="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" \
+      for-each-ref --sort=-v:refname 'refs/tags/v*' \
+      --format='%(refname:short)' \
+      | "${pkgs.coreutils}/bin/head" -n 1)"
+    target="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse "$latestTag")"
+
+    if [ "$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse HEAD)" = "$target" ]; then
+      exit 0
+    fi
+
+    "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard "$target"
 
     temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "/var/lib/${hugoDirectory}")"
     "${pkgs.coreutils}/bin/chmod" 755 "$temp"
     "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
       --destination "$temp"
-      
+
     previous=""
     if [ -L "${serviceConfigurations.outputDirectory}" ]; then
       previous="$("${pkgs.coreutils}/bin/readlink" "${serviceConfigurations.outputDirectory}")"
