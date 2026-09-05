@@ -32,26 +32,18 @@ let
       "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard FETCH_HEAD
     fi
 
-    # 记录切换前 public 指向的旧版本（symlink 本身就是“上一次的名字”）。
-    old=""
-    if [ -L "${serviceConfigurations.outputDirectory}" ]; then
-      old="$(${pkgs.coreutils}/bin/readlink "${serviceConfigurations.outputDirectory}")"
-    fi
-
-    # 构建到唯一的临时目录（随机名字），完成后原子地把 public 符号链接切到新版本，
-    # 避免访问者看到构建到一半的目录（否则会出现随机 404 / 资源不匹配）。
-    tmp="$(${pkgs.coreutils}/bin/mktemp -d "${serviceConfigurations.outputDirectory}.tmp.XXXXXX")"
-    ${pkgs.hugo}/bin/hugo \
+    temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "${serviceConfigurations.outputDirectory}")"
+    "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
-      --destination "$tmp"
-
-    ln -sfn "$tmp" "${serviceConfigurations.outputDirectory}"
-
-    # 删除被切走的旧版本（只删我们自己生成的 public.tmp.* 目录）。
-    if [ -n "$old" ] && [ "$old" != "$tmp" ]; then
-      case "$old" in
-        "${serviceConfigurations.outputDirectory}".tmp.*) rm -rf "$old" ;;
-      esac
+      --destination "$temp"
+      
+    previous=""
+    if [ -L "${serviceConfigurations.outputDirectory}" ]; then
+      previous="$("${pkgs.coreutils}/bin/readlink" "${serviceConfigurations.outputDirectory}")"
+    fi
+    ln -sfn "$temp" "${serviceConfigurations.outputDirectory}"
+    if [ -n "$previous" ]; then
+      rm -rf "$previous"
     fi
   '';
 in
