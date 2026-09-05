@@ -21,13 +21,12 @@ let
     export GIT_SSH_COMMAND="${sshCommand}"
     if [ ! -d "${sourceDirectory}/.git" ]; then
       "${pkgs.git}/bin/git" clone \
-        --depth 1 \
         --branch main \
         git@github.com:yueyinqiu/TjslpHpcHandbook.git \
         "${sourceDirectory}"
     else
       before="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse HEAD)"
-      "${pkgs.git}/bin/git" -C "${sourceDirectory}" fetch --depth 1 origin main
+      "${pkgs.git}/bin/git" -C "${sourceDirectory}" fetch origin main
       after="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse FETCH_HEAD)"
       if [ "$before" = "$after" ]; then
         exit 0
