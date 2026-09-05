@@ -32,7 +32,7 @@ let
       "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard FETCH_HEAD
     fi
 
-    temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "${serviceConfigurations.outputDirectory}")"
+    temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "${hugoDirectory}")"
     "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
       --destination "$temp"
