@@ -43,7 +43,9 @@ let
     fi
     ln -sfn "$temp" "${serviceConfigurations.outputDirectory}"
     if [ -n "$previous" ]; then
-      rm -rf "$previous"
+      case "$previous" in
+        "${hugoDirectory}"/*) rm -rf "$previous" ;;
+      esac
     fi
   '';
 in
