@@ -60,6 +60,8 @@ in
       Type = "oneshot";
       StateDirectory = serviceConfigurations.stateDirectoryName;
       ExecStart = "${script}";
+      Restart = "on-failure";
+      RestartSec = 10;
     };
   };
 
@@ -67,8 +69,8 @@ in
     description = "Timer for tjslp-hpc-doc content update";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnBootSec = "1min";
-      OnUnitActiveSec = "5min";
+      OnBootSec = 0;
+      OnUnitActiveSec = "1min";
       Persistent = true;
     };
   };
