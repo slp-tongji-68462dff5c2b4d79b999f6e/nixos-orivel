@@ -4,12 +4,11 @@
   ...
 }:
 let
-  oauth2ProxyDirectory = "/var/lib/${serviceConfigurations.stateDirectoryName}/oauth2-proxy";
-  cookieSecret = "${oauth2ProxyDirectory}/cookie-secret";
+  oauth2ProxyDirectory = "${serviceConfigurations.stateDirectoryName}/oauth2-proxy";
+  cookieSecret = "/var/lib/${oauth2ProxyDirectory}/cookie-secret";
   
   ensureCookieSecret = pkgs.writeShellScript "ensure-cookie-secret" ''
     set -euo pipefail
-    mkdir -p "${oauth2ProxyDirectory}"
     if [ ! -s "${cookieSecret}" ]; then
       "${pkgs.openssl}/bin/openssl" rand -base64 32 | \
         "${pkgs.coreutils}/bin/tr" -- '+/' '-_' | \
@@ -54,7 +53,7 @@ in
   };
 
   systemd.services.oauth2-proxy.serviceConfig = {
-    StateDirectory = serviceConfigurations.stateDirectoryName;
+    StateDirectory = oauth2ProxyDirectory;
     ExecStartPre = "${ensureCookieSecret}";
   };
 }

@@ -4,21 +4,19 @@
   ...
 }:
 let
-  hugoDirectory = "/var/lib/${serviceConfigurations.stateDirectoryName}/hugo";
-  sourceDirectory = "${hugoDirectory}/source";
+  hugoDirectory = "${serviceConfigurations.stateDirectoryName}/hugo";
+  sourceDirectory = "/var/lib/${hugoDirectory}/source";
 
   sshCommand = pkgs.writeShellScript "tjslp-hpc-doc-git-ssh" ''
     exec ${pkgs.openssh}/bin/ssh \
       -o StrictHostKeyChecking=accept-new \
-      -o "UserKnownHostsFile=${hugoDirectory}/known_hosts" \
+      -o "UserKnownHostsFile=/var/lib/${hugoDirectory}/known_hosts" \
       -i "${serviceConfigurations.deployKeyFile}" \
       "$@"
   '';
 
   script = pkgs.writeShellScript "tjslp-hpc-doc-pull-and-build" ''
     set -euo pipefail
-
-    mkdir -p "${hugoDirectory}"
 
     export GIT_SSH_COMMAND="${sshCommand}"
     if [ ! -d "${sourceDirectory}/.git" ]; then
@@ -37,7 +35,7 @@ let
       "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard FETCH_HEAD
     fi
 
-    temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "${hugoDirectory}")"
+    temp="$("${pkgs.coreutils}/bin/mktemp" -d -p "/var/lib/${hugoDirectory}")"
     "${pkgs.coreutils}/bin/chmod" 755 "$temp"
     "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
@@ -50,7 +48,7 @@ let
     ln -sfn "$temp" "${serviceConfigurations.outputDirectory}"
     if [ -n "$previous" ]; then
       case "$previous" in
-        "${hugoDirectory}"/*) rm -rf "$previous" ;;
+        "/var/lib/${hugoDirectory}"/*) rm -rf "$previous" ;;
       esac
     fi
   '';
@@ -64,7 +62,7 @@ in
 
     serviceConfig = {
       Type = "oneshot";
-      StateDirectory = serviceConfigurations.stateDirectoryName;
+      StateDirectory = hugoDirectory;
       ExecStart = "${script}";
       Restart = "on-failure";
       RestartSec = 10;
