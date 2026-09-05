@@ -6,6 +6,7 @@
 let
   hugoDirectory = "${serviceConfigurations.stateDirectoryName}/hugo";
   sourceDirectory = "/var/lib/${hugoDirectory}/source";
+  deployRecordFile = "/var/lib/${hugoDirectory}/deployed";
 
   sshCommand = pkgs.writeShellScript "tjslp-hpc-doc-git-ssh" ''
     exec ${pkgs.openssh}/bin/ssh \
@@ -33,7 +34,8 @@ let
       | "${pkgs.coreutils}/bin/head" -n 1)"
     target="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse "$latestTag")"
 
-    if [ "$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse HEAD)" = "$target" ]; then
+    if [ -f "${deployRecordFile}" ] \
+      && [ "$("${pkgs.coreutils}/bin/cat" "${deployRecordFile}")" = "$target" ]; then
       exit 0
     fi
 
@@ -44,6 +46,8 @@ let
     "${pkgs.hugo}/bin/hugo" \
       --source "${sourceDirectory}" \
       --destination "$temp"
+
+    "${pkgs.coreutils}/bin/printf" '%s' "$target" > "${deployRecordFile}"
 
     previous=""
     if [ -L "${serviceConfigurations.outputDirectory}" ]; then
