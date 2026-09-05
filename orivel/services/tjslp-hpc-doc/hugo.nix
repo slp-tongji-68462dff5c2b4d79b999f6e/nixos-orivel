@@ -28,7 +28,12 @@ let
         git@github.com:yueyinqiu/TjslpHpcHandbook.git \
         "${sourceDirectory}"
     else
+      before="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse HEAD)"
       "${pkgs.git}/bin/git" -C "${sourceDirectory}" fetch --depth 1 origin main
+      after="$("${pkgs.git}/bin/git" -C "${sourceDirectory}" rev-parse FETCH_HEAD)"
+      if [ "$before" = "$after" ]; then
+        exit 0
+      fi
       "${pkgs.git}/bin/git" -C "${sourceDirectory}" reset --hard FETCH_HEAD
     fi
 
